@@ -32,7 +32,7 @@ function menu() {
           viewRoles();
           break;
         case "Add a department":
-          AddDepartment();
+          addDepartment();
           break;
         case "Add a role":
           addRole();
@@ -57,7 +57,8 @@ async function viewDepartments() {
 }
 
 function viewAllEmployees() {
-  const sql = `SELECT employee.id, employee.first_name AS "first name", employee.last_name AS "last name", role.title, department.name AS department, role.salary, manager.first_name || ' ' || manager.last_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id`;
+   const sql = `SELECT employee.id, employee.first_name AS "first name", employee.last_name AS "last name" FROM employee `;
+    //  role.title, department.name AS department, role.salary, manager.first_name || ' ' || manager.last_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id`
   pool.query(sql, (err, { rows }) => {
     if (err) console.log(err);
     console.table(rows);
@@ -73,7 +74,46 @@ async function viewRoles() {
   menu();
 }
 
-async function 
+async function addDepartment() {
+     const answer = await inquirer
+        .prompt([
+            {
+                type:'input',
+                name: 'add_department',
+                message: 'What department are you adding?'
+            }
+        ]);
+        const newDepartment = answer.add_department;
+        // console.log(`New department added: ${newDepartment}`);
+
+}
+
+async function addRole() {
+    const answer = await inquirer
+       .prompt([
+           {
+               type:'input',
+               name: 'add_role',
+               message: 'What role are you adding?'
+           }
+       ]);
+       const newDepartment = answer.add_role;
+
+}
+
+async function addEmployee() {
+    const answer = await inquirer
+       .prompt([
+           {
+               type:'input',
+               name: 'add_employee',
+               message: 'What is the first and last name of employee?'
+           }
+       ]);
+       const newDepartment = answer.add_employee;
+
+}
+
 
 
 menu();
