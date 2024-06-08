@@ -57,8 +57,13 @@ async function viewDepartments() {
 }
 
 function viewAllEmployees() {
-   const sql = `SELECT employee.id, employee.first_name AS "first name", employee.last_name AS "last name" FROM employee 
-     role.title, department.name AS department, role.salary, manager.first_name || ' ' || manager.last_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id`;
+   const sql = `SELECT employee.id, employee.first_name AS "first name", employee.last_name AS "last name", 
+   role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
+   FROM employee 
+   LEFT JOIN role ON employee.role_id = role.id 
+   LEFT JOIN department ON role.department_id = department.id 
+   LEFT JOIN employee manager ON manager.id = employee.manager_id`;
+
   pool.query(sql, (err, { rows }) => {
     if (err) console.log(err);
     console.table(rows);
@@ -147,8 +152,24 @@ async function addEmployee() {
        ]);
         await pool.query("insert into employee(first_name,last_name,role_id,manager_id",[answer.first_name,answer.last_name,answer.role_id,answer.manager_id])
         console.log('employee was sucessfully added!')
-        menu()
+        //menu()
 
+        async function updateEmployeeRole(employeeId, newRoleId) {
+          try {
+              // Update the employee's role with the new role ID
+              const query = `
+                  UPDATE employee
+                  SET role_id = $1
+                  WHERE id = $2
+              `;
+              await pool.query(query, [newRoleId, employeeId]);
+      
+              console.log('Employee role updated successfully');
+          } catch (error) {
+              console.error('Error updating employee role:', error);
+          }
+      }
+      menu()
 }
 
 
